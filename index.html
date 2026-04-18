@@ -1,0 +1,280 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Number Guessing Game</title>
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+
+    <style>
+      body {
+        margin: 0;
+        font-family: Arial;
+        background: linear-gradient(135deg, #ffb6c1, #98fb98);
+        overflow: hidden;
+      }
+
+      /* NAVBAR */
+      .glass-nav {
+        background: rgba(255, 255, 255, 0.25);
+        backdrop-filter: blur(10px);
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+      }
+
+      /* MAIN */
+      .main {
+        position: relative;
+        height: calc(100vh - 70px);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      /* ZIP ANIMATION PAGES */
+      .page {
+        position: absolute;
+        width: 100%;
+        opacity: 0;
+        transform: scaleY(0.2) scaleX(0.9);
+        transform-origin: top;
+        filter: blur(10px);
+        transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+        pointer-events: none;
+
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        text-align: center;
+        padding: 20px;
+      }
+
+      .page.active {
+        opacity: 1;
+        transform: scaleY(1) scaleX(1);
+        filter: blur(0);
+        pointer-events: auto;
+        animation: unfoldZip 0.25s ease-out;
+      }
+
+      @keyframes unfoldZip {
+        0% {
+          transform: scaleY(0.2) scaleX(0.9);
+          opacity: 0;
+          filter: blur(10px);
+        }
+        70% {
+          transform: scaleY(1.05) scaleX(1);
+          opacity: 1;
+          filter: blur(0);
+        }
+        100% {
+          transform: scaleY(1) scaleX(1);
+        }
+      }
+
+      /* CARD */
+      .card {
+        background: rgba(255, 255, 255, 0.25);
+        backdrop-filter: blur(12px);
+        padding: 40px;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        width: 370px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+      }
+
+      input {
+        padding: 12px;
+        width: 100%;
+        border-radius: 12px;
+        border: none;
+        outline: none;
+      }
+
+      .button-row {
+        display: flex;
+        gap: 12px;
+        width: 100%;
+      }
+
+      button {
+        flex: 1;
+        padding: 12px;
+        border-radius: 12px;
+        border: none;
+        font-weight: bold;
+        color: white;
+        cursor: pointer;
+        background: linear-gradient(135deg, #ff69b4, #32cd32);
+      }
+
+      #result {
+        font-size: 18px;
+      }
+
+      /* ABOUT STYLE */
+      .about-box {
+        max-width: 700px;
+        background: rgba(255, 255, 255, 0.25);
+        backdrop-filter: blur(12px);
+        padding: 30px;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      }
+
+      .about-box h1 {
+        font-size: 40px;
+        margin-bottom: 10px;
+      }
+
+      .about-box p {
+        font-size: 16px;
+        margin-bottom: 10px;
+      }
+
+      .highlight {
+        font-weight: bold;
+        color: #ff2e93;
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-expand-lg glass-nav">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="#">🎮 Web Games</a>
+
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="#" data-page="home">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#" data-page="game">Play</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#" data-page="about">About</a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <!-- PAGES -->
+    <div class="main">
+      <!-- HOME -->
+      <div class="page active" id="home">
+        <h1>🏠 Welcome to Number Guessing Game</h1>
+        <p>🎯 A fun web browser game built using Flask + JavaScript</p>
+
+        <div class="about-box">
+          <h3>📌 How to Play</h3>
+          <p>1️⃣ Click <span class="highlight">Play</span> to go on Game page</p>
+          <p>1️⃣ Click <span class="highlight">Start</span> to begin the game</p>
+          <p>2️⃣ Enter a number between 1 to 100</p>
+          <p>3️⃣ Click <span class="highlight">Guess</span></p>
+          <p>4️⃣ You will get hints like too high or too low</p>
+          <p>5️⃣ Try to guess in minimum attempts 🏆</p>
+        </div>
+      </div>
+
+      <!-- GAME -->
+      <div class="page" id="game">
+        <div class="card">
+          <h2>🎯 Guess the Number</h2>
+
+          <input type="number" id="guess" placeholder="Enter number (1-100)" />
+
+          <div class="button-row">
+            <button onclick="startGame()">🚀 Start</button>
+            <button onclick="sendGuess()">🎯 Guess</button>
+          </div>
+
+          <p id="result">Start the game first 🎮</p>
+        </div>
+      </div>
+
+      <!-- ABOUT -->
+      <div class="page" id="about">
+        <div class="about-box">
+          <h1>ℹ️ About This Game</h1>
+
+          <p>
+            🎮 This is a
+            <span class="highlight">web browser number guessing game</span>
+            created for fun and learning purposes.
+          </p>
+
+          <p>👨‍💻 Developed by <span class="highlight">Ardas the Coder</span></p>
+
+          <p>
+            🚀 This project is built using:
+            <br />✔ HTML <br />✔ CSS (Glassmorphism UI) <br />✔ JavaScript
+            <br />✔ Flask (Python backend)
+          </p>
+
+          <p>
+            📺 Support us on YouTube:
+            <br /><span class="highlight">Ardas Gaming</span>
+          </p>
+
+          <p>
+            💖 Thanks for playing! Keep supporting and learning new coding
+            skills.
+          </p>
+          <a href="https://www.youtube.com/@ardasgaming4095" target="_blank">
+            Support on YouTube
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- SCRIPT -->
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const pages = document.querySelectorAll(".page");
+        const links = document.querySelectorAll("[data-page]");
+
+        links.forEach((link) => {
+          link.addEventListener("click", function (e) {
+            e.preventDefault();
+
+            const page = this.getAttribute("data-page");
+
+            pages.forEach((p) => p.classList.remove("active"));
+
+            document.getElementById(page).classList.add("active");
+          });
+        });
+      });
+
+      /* FLASK API */
+      function startGame() {
+        fetch("/start")
+          .then((res) => res.json())
+          .then((data) => {
+            document.getElementById("result").innerText = data.message;
+          });
+      }
+
+      function sendGuess() {
+        const guess = document.getElementById("guess").value;
+
+        fetch("/guess", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ guess }),
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            document.getElementById("result").innerText = data.result;
+          });
+      }
+    </script>
+  </body>
+</html>
